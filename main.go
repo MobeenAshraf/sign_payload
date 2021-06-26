@@ -10,13 +10,17 @@ import (
 )
 
 func main() {
+
+	fpayloadSigType := flag.String("psig", "ecdsa_recovery", "Payload Signature. Default: ecdsa_recovery")
+	fsigType := flag.String("ssig", "ecdsa", "Signing Signature Signature. Default: ecdsa")
 	privKeyHex := flag.String("p", "", "Private Key Hex (32 bytes) 64 chars")
 	senderAddress := flag.String("sender", "", "Sender Address")
 	signingMessage := flag.String("m", "", "Signing Message tbu for Payload")
 	flag.Parse()
-	const (
-		payloadSigType types.SignatureType = "ecdsa_recovery"
-		sigType        types.SignatureType = "ecdsa_recovery"
+
+	var (
+		payloadSigType types.SignatureType = types.SignatureType(*fpayloadSigType)
+		sigType        types.SignatureType = types.SignatureType(*fsigType)
 	)
 
 	signingPayloadHexDecoded, _ := hex.DecodeString(*signingMessage)
@@ -25,6 +29,7 @@ func main() {
 		returnErr(err)
 		return
 	}
+
 	signer, _ := keyPair.Signer()
 	sig, err := signer.Sign(&types.SigningPayload{
 		AccountIdentifier: &types.AccountIdentifier{

@@ -23,15 +23,14 @@ func main() {
 		returnErr(err)
 		return
 	}
-
 	signer, _ := keyPair.Signer()
 	sig, err := signer.Sign(&types.SigningPayload{
 		AccountIdentifier: &types.AccountIdentifier{
 			Address: senderAddress,
 		},
 		Bytes:         signingPayloadHexDecoded,
-		SignatureType: sigType,
-	}, payloadSigType)
+		SignatureType: payloadSigType,
+	}, sigType)
 	if err != nil {
 		returnErr(err)
 		return

@@ -1,4 +1,4 @@
-module rosetta_sign
+module sign_payload
 
 go 1.16
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/hex"
+	"flag"
 	"fmt"
 
 	"github.com/coinbase/rosetta-sdk-go/keys"
@@ -9,16 +10,17 @@ import (
 )
 
 func main() {
-	privKeyHex := ""
-	senderAddress := ""
-	signingMessage := ""
+	privKeyHex := flag.String("p", "", "Private Key Hex (32 bytes) 64 chars")
+	senderAddress := flag.String("sender", "", "Sender Address")
+	signingMessage := flag.String("m", "", "Signing Message tbu for Payload")
+	flag.Parse()
 	const (
 		payloadSigType types.SignatureType = "ecdsa_recovery"
 		sigType        types.SignatureType = "ecdsa_recovery"
 	)
 
-	signingPayloadHexDecoded, _ := hex.DecodeString(signingMessage)
-	keyPair, err := keys.ImportPrivateKey(privKeyHex, types.Secp256k1)
+	signingPayloadHexDecoded, _ := hex.DecodeString(*signingMessage)
+	keyPair, err := keys.ImportPrivateKey(*privKeyHex, types.Secp256k1)
 	if err != nil {
 		returnErr(err)
 		return
@@ -26,7 +28,7 @@ func main() {
 	signer, _ := keyPair.Signer()
 	sig, err := signer.Sign(&types.SigningPayload{
 		AccountIdentifier: &types.AccountIdentifier{
-			Address: senderAddress,
+			Address: *senderAddress,
 		},
 		Bytes:         signingPayloadHexDecoded,
 		SignatureType: payloadSigType,
